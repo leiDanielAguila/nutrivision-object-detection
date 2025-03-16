@@ -12,5 +12,4 @@ __pycache__/
 *.log
 *.cache
 
-# Ignore model weights
-*.pt
+
