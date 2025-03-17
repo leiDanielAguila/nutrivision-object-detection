@@ -32,7 +32,7 @@ model = load_model()
 def preprocess_image(image):
     return image.resize((640, 640))  # Resize image to 640x640
 
-@app.post("/greet")
+@app.get("/greet")
 async def hello_world():
     return {"status": "working properly"}
 
