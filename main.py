@@ -30,6 +30,10 @@ model = load_model()
 def preprocess_image(image):
     return image.resize((640, 640))  # Resize image to 640x640
 
+@app.get("/greet")
+async def hello_world():
+    return {"status": "working properly"}
+
 
 @app.post("/detect")
 async def detect_fruits(file: UploadFile = File(...)):
