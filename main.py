@@ -3,7 +3,9 @@ from ultralytics import YOLO
 from PIL import Image
 import gc
 import io
+import os
 import requests
+import uvicorn
 
 app = FastAPI()
 
@@ -65,3 +67,7 @@ async def detect_fruits(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))  # Default to 8000 if PORT is not set
+    uvicorn.run(app, host="0.0.0.0", port=port)
