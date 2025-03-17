@@ -22,10 +22,10 @@ def load_model():
     else:
         raise Exception("Failed to download model from Hugging Face")
 
-    return YOLO(model_path).to("cpu").half()  # Load model in half precision to save RAM
+    return YOLO(model_path).to("cpu").half()
 
 
-# Load the YOLO model
+
 model = load_model()
 
 
@@ -41,14 +41,19 @@ async def hello_world():
 async def detect_fruits(file: UploadFile = File(...)):
     try:
         image_bytes = await file.read()
+        print("✅ Image received")
         image = Image.open(io.BytesIO(image_bytes))
         image = preprocess_image(image)
+        print("✅ Image processed successfully")
 
         # Perform detection
         results = model.predict(image, conf=0.6)
+        print("✅ Model inference completed")
         class_names = model.names
+        print(f"✅ Class names: {class_names}")
 
         detected_objects = results[0].boxes.cls if results else []
+        print(f"✅ Detected objects: {detected_objects}")
         object_count = {}
 
         for cls_id in detected_objects:
@@ -60,11 +65,14 @@ async def detect_fruits(file: UploadFile = File(...)):
 
 
         if not object_count:
+            print("❌ No objects detected")
             return {"message": "No fruits detected"}
 
+        print(f"✅ Detection output: {object_count}")
         return {"detections": object_count}
 
     except Exception as e:
+        print(f"❌ Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
