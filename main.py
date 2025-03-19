@@ -22,7 +22,7 @@ def load_model():
     else:
         raise Exception("Failed to download model from Hugging Face")
 
-    return YOLO(model_path)
+    return YOLO(model_path).to("cpu").half()
 
 
 
