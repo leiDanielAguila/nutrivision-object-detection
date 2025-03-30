@@ -48,6 +48,9 @@ async def hello_world():
 async def detect_fruits(files: List[UploadFile] = File(...)):
     try:
         total_object_count = {}
+        calories = 0
+        sugar = 0
+        sodium = 0
 
         for file in files:
             image_bytes = await file.read()
@@ -71,7 +74,27 @@ async def detect_fruits(files: List[UploadFile] = File(...)):
         if not total_object_count:
             return {"message": "No fruits detected"}
 
-        return total_object_count
+        # return total_object_count
+
+        if "mango" in total_object_count.keys():
+            calories += (total_object_count["mango"] * mango_calories)
+            sodium += (total_object_count["mango"] * mango_sodium)
+            sugar += (total_object_count["mango"] * mango_sugar)
+        if "apple" in total_object_count.keys():
+            calories += (total_object_count["apple"] * apple_calories)
+            sodium += (total_object_count["apple"] * apple_sodium)
+            sugar += (total_object_count["apple"] * apple_sugar)
+        if "orange" in total_object_count.keys():
+            calories += (total_object_count["orange"] * orange_calories)
+            sodium += (total_object_count["orange"] * orange_sodium)
+            sugar += (total_object_count["orange"] * orange_sugar)
+
+        return {
+            "Fruits Detected": total_object_count,
+            "Total Calories": calories,
+            "Total Sugar": sugar,
+            "Total Sodium": round(sodium, 5),
+        }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
