@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from ultralytics import YOLO
+from typing import List
 from PIL import Image
 import gc
 import io
@@ -12,7 +13,7 @@ app = FastAPI()
 MODEL_URL = "https://huggingface.co/leiDanielAguila/nutrivision/resolve/main/nutrivision_model.pt"
 
 def load_model():
-    model_path = "yolov8_nutrivision.pt"
+    model_path = "model.pt"
     response = requests.get(MODEL_URL, stream=True)
 
     if response.status_code == 200:
@@ -22,51 +23,50 @@ def load_model():
     else:
         raise Exception("Failed to download model from Hugging Face")
 
-    return YOLO(model_path).to("cpu").half()
-
-
+    return YOLO(model_path)
 
 model = load_model()
-def preprocess_image(image):
-    return image.resize((640, 640))  # Resize image to 640x640
 
 @app.get("/greet")
 async def hello_world():
     return {"status": "working properly"}
 
+
 @app.post("/detect")
-async def detect_fruits(file: UploadFile = File(...)):
+async def detect_fruits(
+        # user_age: int = File(...),
+        # user_height: int = File(...),
+        # user_weight: int = File(...),
+        files: List[UploadFile] = File(...)
+):
     try:
-        image_bytes = await file.read()
-        print("✅ Image received")
-        image = Image.open(io.BytesIO(image_bytes))
-        image = preprocess_image(image)
-        print("✅ Image processed successfully")
 
-        # Perform detection
-        results = model.predict(image, conf=0.6)
-        print("✅ Model inference completed")
-        class_names = model.names
-        print(f"✅ Class names: {class_names}")
+        result_list = []
 
-        detected_objects = results[0].boxes.cls if results else []
-        print(f"✅ Detected objects: {detected_objects}")
-        object_count = {}
+        for file in files:
+            image_bytes = await file.read()
+            image = Image.open(io.BytesIO(image_bytes))
+            results = model.predict(image, conf=0.7)
+            class_names = model.names
+            detected_objects = results[0].boxes.cls if results else []
+            object_count = {}
 
-        for cls_id in detected_objects:
-            class_name = class_names[int(cls_id)]
-            object_count[class_name] = object_count.get(class_name, 0) + 1
+            for cls_id in detected_objects:
+                class_name = class_names[int(cls_id)]
+                object_count[class_name] = object_count.get(class_name, 0) + 1
 
-        del image_bytes, image, results
-        gc.collect()
-
-
-        if not object_count:
+            del image_bytes, image, results
+            gc.collect()
+            result_list.append({
+                "filename": file.filename,
+                "detections": object_count if object_count else "no fruits detected."
+            })
+        if not result_list:
             print("❌ No objects detected")
             return {"message": "No fruits detected"}
 
-        print(f"✅ Detection output: {object_count}")
-        return {"detections": object_count}
+        print(f"✅ Detection output: {result_list}")
+        return {"detections": result_list}
 
     except Exception as e:
         print(f"❌ Error: {str(e)}")
