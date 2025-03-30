@@ -9,7 +9,7 @@ import uvicorn
 
 app = FastAPI()
 
-MODEL_URL = "https://huggingface.co/leiDanielAguila/nutrivision/resolve/main/yolov8_nutrivision.pt"
+MODEL_URL = "https://huggingface.co/leiDanielAguila/nutrivision/resolve/main/nutrivision_model.pt"
 
 def load_model():
     model_path = "yolov8_nutrivision.pt"
@@ -27,15 +27,12 @@ def load_model():
 
 
 model = load_model()
-
-
 def preprocess_image(image):
     return image.resize((640, 640))  # Resize image to 640x640
 
 @app.get("/greet")
 async def hello_world():
     return {"status": "working properly"}
-
 
 @app.post("/detect")
 async def detect_fruits(file: UploadFile = File(...)):
