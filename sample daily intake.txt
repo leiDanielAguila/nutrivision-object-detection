@@ -1,3 +1,4 @@
+(Sample only from chatgpt):
 Age Group	Weight (kg)	 Height (cm)	    Calories (g)	Sodium (g)	Sugar (g)
 5-8 yrs	    20-30 kg	100-130 cm	        350-420 g	     ≤ 1.5 g	≤ 24 g
 9-13 yrs	35-50 kg	130-150 cm	        450-500 g	     ≤ 1.8 g	≤ 30 g
@@ -5,3 +6,10 @@ Age Group	Weight (kg)	 Height (cm)	    Calories (g)	Sodium (g)	Sugar (g)
 19-30 yrs	60-100 kg	160-190 cm	        700-850 g	     ≤ 2.3 g	≤ 36 g
 31-50 yrs	60-90 kg	155-185 cm	        650-800 g	     ≤ 2.3 g	≤ 36 g
 51+ yrs	    55-85 kg	150-180 cm	        550-750 g	     ≤ 2.3 g	≤ 30 g
+
+
+(From nutritionix):
+Nutrients   Calories (g)    Sodium (g)     Sugar (g)
+Apple       95 g            0.0018 g        19 g
+Mango       202 g           0.0034 g        46 g
+Orange      69 g            0.0014 g        12 g

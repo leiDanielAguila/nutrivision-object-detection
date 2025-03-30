@@ -10,6 +10,18 @@ import uvicorn
 
 app = FastAPI()
 
+apple_calories = 95
+apple_sodium = 0.0018
+apple_sugar = 19
+
+mango_calories = 202
+mango_sodium = 0.0034
+mango_sugar = 46
+
+orange_calories = 69
+orange_sodium = 0.0014
+orange_sugar = 12
+
 MODEL_URL = "https://huggingface.co/leiDanielAguila/nutrivision/resolve/main/nutrivision_model.pt"
 
 def load_model():
@@ -33,43 +45,35 @@ async def hello_world():
 
 
 @app.post("/detect")
-async def detect_fruits(
-        # user_age: int = File(...),
-        # user_height: int = File(...),
-        # user_weight: int = File(...),
-        files: List[UploadFile] = File(...)
-):
+async def detect_fruits(files: List[UploadFile] = File(...)):
     try:
-
-        result_list = []
+        total_object_count = {}
 
         for file in files:
             image_bytes = await file.read()
             image = Image.open(io.BytesIO(image_bytes))
+
             results = model.predict(image, conf=0.7)
+
+            if not results or len(results[0].boxes.cls) == 0:
+                continue
+
             class_names = model.names
-            detected_objects = results[0].boxes.cls if results else []
-            object_count = {}
+            detected_objects = results[0].boxes.cls
 
             for cls_id in detected_objects:
                 class_name = class_names[int(cls_id)]
-                object_count[class_name] = object_count.get(class_name, 0) + 1
+                total_object_count[class_name] = total_object_count.get(class_name, 0) + 1
 
             del image_bytes, image, results
             gc.collect()
-            result_list.append({
-                "filename": file.filename,
-                "detections": object_count if object_count else "no fruits detected."
-            })
-        if not result_list:
-            print("❌ No objects detected")
+
+        if not total_object_count:
             return {"message": "No fruits detected"}
 
-        print(f"✅ Detection output: {result_list}")
-        return {"detections": result_list}
+        return total_object_count
 
     except Exception as e:
-        print(f"❌ Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
