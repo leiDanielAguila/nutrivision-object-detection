@@ -1,27 +1,34 @@
-FROM python:3.10
+FROM python:3.9-slim
 
 WORKDIR /app
 
-# Add essential tools for debugging & proper apt usage
+# Install required system dependencies for PIL and OpenCV (used by YOLO)
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    apt-utils \
-    curl \
-    gnupg2 \
-    && apt-get install -y \
+    libgl1-mesa-glx \
     libglib2.0-0 \
     libsm6 \
-    libxrender1 \
     libxext6 \
-    libgl1 \
-    libgl1-mesa-glx \
-    libgthread-2.0-0 \
+    libxrender-dev \
+    --no-install-recommends \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy requirements first to leverage Docker cache
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the application code and model
 COPY . .
 
-RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r requirements.txt
+# Make sure the model directory exists
+RUN mkdir -p app
 
-ENV PORT=8000
+# Create an empty file as a placeholder if the model doesn't exist locally
+# (you'll need to upload your model to Render or fetch it during startup)
+RUN touch app/nutrivision_v3.pt
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Expose the port the app runs on
+EXPOSE 8000
+
+# Command to run the application
+CMD ["python", "main.py"]
