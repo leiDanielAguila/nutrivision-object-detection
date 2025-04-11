@@ -5,10 +5,18 @@ from PIL import Image
 import gc
 import io
 import os
-import requests
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # You can restrict this to your app domain later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 apple_calories = 95
 apple_sodium = 0.0018
