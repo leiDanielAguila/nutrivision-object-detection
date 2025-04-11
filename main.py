@@ -18,17 +18,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-apple_calories = 95
+apple_carbs = 25
 apple_sodium = 0.0018
-apple_sugar = 19
+apple_protein = 0.5
 
-mango_calories = 202
+mango_carbs = 50
 mango_sodium = 0.0034
-mango_sugar = 46
+mango_protein = 2.8
 
-orange_calories = 69
+orange_carbs = 18
 orange_sodium = 0.0014
-orange_sugar = 12
+orange_protein = 1.3
 
 # new comment
 
@@ -43,8 +43,8 @@ async def hello_world():
 async def detect_fruits(files: List[UploadFile] = File(...)):
     try:
         total_object_count = {}
-        calories = 0
-        sugar = 0
+        carbs = 0
+        protein = 0
         sodium = 0
 
         for file in files:
@@ -72,23 +72,23 @@ async def detect_fruits(files: List[UploadFile] = File(...)):
         # return total_object_count
 
         if "mango" in total_object_count.keys():
-            calories += (total_object_count["mango"] * mango_calories)
+            carbs += (total_object_count["mango"] * mango_carbs)
             sodium += (total_object_count["mango"] * mango_sodium)
-            sugar += (total_object_count["mango"] * mango_sugar)
+            protein += (total_object_count["mango"] * mango_protein)
         if "apple" in total_object_count.keys():
-            calories += (total_object_count["apple"] * apple_calories)
+            carbs += (total_object_count["apple"] * apple_carbs)
             sodium += (total_object_count["apple"] * apple_sodium)
-            sugar += (total_object_count["apple"] * apple_sugar)
+            protein += (total_object_count["apple"] * apple_protein)
         if "orange" in total_object_count.keys():
-            calories += (total_object_count["orange"] * orange_calories)
+            carbs += (total_object_count["orange"] * orange_carbs)
             sodium += (total_object_count["orange"] * orange_sodium)
-            sugar += (total_object_count["orange"] * orange_sugar)
+            protein += (total_object_count["orange"] * orange_protein)
 
         return {
-            "Fruits Detected": total_object_count,
-            "Total Calories": calories,
-            "Total Sugar": sugar,
-            "Total Sodium": round(sodium, 5 ),
+            "Fruits_Detected": total_object_count,
+            "total_carbs": carbs,
+            "total_protein": round(protein, 5),
+            "Total_sodium": round(sodium, 5 ),
         }
 
     except Exception as e:
