@@ -22,7 +22,7 @@ orange_calories = 69
 orange_sodium = 0.0014
 orange_sugar = 12
 
-
+# new comment
 
 model = YOLO('nutrivision_v3.pt')
 
