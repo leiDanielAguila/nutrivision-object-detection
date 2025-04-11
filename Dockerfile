@@ -1,18 +1,18 @@
-# Use official Python base image
+# Use an official Python base image
 FROM python:3.10-slim
 
-# Set working directory
+# Set the working directory
 WORKDIR /app
 
-# Copy and install dependencies
+# Install system dependencies
+RUN apt-get update && apt-get install -y libgl1-mesa-glx
+
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the whole project into the container
-COPY ./app /app
+# Copy your code
+COPY . .
 
-# Expose port
-EXPOSE 8000
-
-# Run the FastAPI app
+# Run the app
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
