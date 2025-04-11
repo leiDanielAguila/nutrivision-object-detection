@@ -22,22 +22,9 @@ orange_calories = 69
 orange_sodium = 0.0014
 orange_sugar = 12
 
-MODEL_URL = "https://huggingface.co/leiDanielAguila/nutrivision/resolve/main/nutrivision_model.pt"
 
-def load_model():
-    model_path = "model.pt"
-    response = requests.get(MODEL_URL, stream=True)
 
-    if response.status_code == 200:
-        with open(model_path, "wb") as f:
-            f.write(response.content)
-        print("Model downloaded from Hugging Face")
-    else:
-        raise Exception("Failed to download model from Hugging Face")
-
-    return YOLO(model_path)
-
-model = load_model()
+model = YOLO('nutrivision_v3.pt')
 
 @app.get("/greet")
 async def hello_world():
