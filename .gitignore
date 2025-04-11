@@ -12,5 +12,5 @@ __pycache__/
 *.log
 *.cache
 
-model/
+app/model/
 test_pictures/
