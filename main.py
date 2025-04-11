@@ -24,7 +24,7 @@ orange_sugar = 12
 
 # new comment
 
-model = YOLO('nutrivision_v3.pt')
+model = YOLO('app/nutrivision_v3.pt')
 
 @app.get("/greet")
 async def hello_world():
