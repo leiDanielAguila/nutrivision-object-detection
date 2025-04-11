@@ -93,7 +93,7 @@ async def detect_fruits(files: List[UploadFile] = File(...)):
             "Fruits Detected": total_object_count,
             "Total Calories": calories,
             "Total Sugar": sugar,
-            "Total Sodium": round(sodium, 5),
+            "Total Sodium": round(sodium, 5 ),
         }
 
     except Exception as e:
