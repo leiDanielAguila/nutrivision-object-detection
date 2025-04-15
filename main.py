@@ -34,6 +34,10 @@ orange_protein = 1.3
 # Load model once at startup
 model = YOLO('app/nutrivision_v3.pt')
 
+@app.get("/")
+async def welcome():
+    return{"server": "Welcome to Nutrivision Object Detection"}
+
 @app.get("/greet")
 async def hello_world():
     return {"status": "working properly"}
